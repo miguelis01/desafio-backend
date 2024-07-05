@@ -10,8 +10,10 @@ app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.static("public"));
 
 //Routes
-const UserRoutes = require('./routes/UserRoutes')
+const UserRoutes = require("./routes/UserRoutes");
+const AppointmentRoutes = require("./routes/AppointmentRoutes");
 
-app.use('/users', UserRoutes)
+app.use("/users", UserRoutes);
+app.use("/appointments", AppointmentRoutes);
 
 app.listen(5000);

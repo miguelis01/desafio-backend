@@ -13,13 +13,11 @@ const Appointment = mongoose.model(
         type: String,
         required: true,
       },
-      status: {
+      description: {
         type: String,
-        enum: ["scheduled", "completed", "canceled"],
-        default: "scheduled",
+        required: true,
       },
-      doctor: Object,
-      patient: Object,
+      user: Object,
     },
     { timestamps: true }
   )

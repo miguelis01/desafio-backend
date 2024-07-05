@@ -1,12 +1,14 @@
 const createUserToken = require("../helpers/create-user-token");
+const getToken = require("../helpers/get-token");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports = class UserController {
   static async register(req, res) {
     // res.json('Ola')
 
-    const { name, password, email, role, confirmpassword } = req.body;
+    const { name, password, email, confirmpassword } = req.body;
 
     //validations
     if (!name) {
@@ -21,11 +23,6 @@ module.exports = class UserController {
 
     if (!email) {
       res.status(422).json({ message: "O email é obrigatorio" });
-      return;
-    }
-
-    if (!role) {
-      res.status(422).json({ message: "O cargo é obrigatorio" });
       return;
     }
 
@@ -57,7 +54,6 @@ module.exports = class UserController {
       name,
       password: passwordHash,
       email,
-      role,
     });
 
     try {
@@ -103,8 +99,29 @@ module.exports = class UserController {
     let currentUser;
 
     if (req.headers.authorization) {
+      const token = getToken(req);
+      const decoded = jwt.verify(token, "usuariosecret");
+
+      currentUser = await User.findById(decoded.id);
+
+      currentUser.password = undefined;
     } else {
       currentUser = null;
     }
+
+    res.status(200).send(currentUser);
+  }
+
+  static async getUserById(req, res) {
+    const id = req.params.id;
+
+    const user = await User.findById(id).select("-password");
+
+    if (!user) {
+      res.status(422).json({ message: "Usuario não encontrado" });
+      return;
+    }
+
+    res.status(200).json({ user });
   }
 };

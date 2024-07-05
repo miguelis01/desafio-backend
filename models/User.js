@@ -17,11 +17,6 @@ const User = mongoose.model(
         type: String,
         required: true,
       },
-      role: {
-        type: String,
-        enum: ["paciente", "medico"],
-        required: true,
-      },
     },
     { timestamps: true }
   )
