@@ -7,7 +7,7 @@ const verifyToken = require("../helpers/verify-token");
 
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
-router.get("/:id", UserController.getUserById);
-router.get("/checkuser", UserController.checkUser);
+router.get("/user/:id", UserController.getUserById);
+router.get("/checkuser", verifyToken, UserController.checkUser);
 
 module.exports = router;
