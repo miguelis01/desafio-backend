@@ -11,5 +11,15 @@ router.get(
   verifyToken,
   AppointmentController.getAllUserAppointments
 );
+router.get(
+  "/createlink/:appointmentId",
+  verifyToken,
+  AppointmentController.createLink
+);
+router.get(
+  "/getappointment/:token",
+  verifyToken,
+  AppointmentController.getAppointment
+);
 
 module.exports = router;

@@ -1,6 +1,9 @@
+const createAppointmentToken = require("../helpers/create-appointment-token");
 const getToken = require("../helpers/get-token");
 const getUserByToken = require("../helpers/get-user-by-token");
 const Appointment = require("../models/Appointment");
+const Token = require("../models/Token");
+const jwt = require("jsonwebtoken");
 
 module.exports = class AppointmentController {
   static async create(req, res) {
@@ -63,5 +66,41 @@ module.exports = class AppointmentController {
     res.status(200).json({
       appointments,
     });
+  }
+
+  static async createLink(req, res) {
+    const appointmentId = req.params.appointmentId;
+    const token = await createAppointmentToken(appointmentId);
+    const link = `http://localhost:5000/appointments/getappointment/${token}`;
+    res.send({ link });
+  }
+
+  static async getAppointment(req, res) {
+    const token = req.params.token;
+
+    try {
+      const decoded = jwt.verify(token, "appointmentsecret");
+      const appointmentId = decoded.appointmentId;
+
+      // Verificar se o token está no banco de dados e não foi usado
+      const tokenRecord = await Token.findOne({ token: token });
+      if (!tokenRecord || tokenRecord.used) {
+        res.status(400).send({ mensagem: "Token inválido ou já usado" });
+        return;
+      }
+
+      // Marcar o token como usado
+      tokenRecord.used = true;
+      await tokenRecord.save();
+
+      const consulta = await Appointment.findOne({ _id: appointmentId });
+      if (consulta) {
+        res.send({ description: consulta.description });
+      } else {
+        res.status(404).send({ mensagem: "Consulta não encontrada" });
+      }
+    } catch (err) {
+      res.status(400).send({ mensagem: "Token inválido ou expirado" });
+    }
   }
 };

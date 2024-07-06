@@ -17,7 +17,7 @@ const checkToken = (req, res, next) => {
     req.user = verified;
     next();
   } catch (error) {
-    return res.status(400).json({ message: "Token Invalido" });
+    return res.status(400).json({ message: error });
   }
 };
 
