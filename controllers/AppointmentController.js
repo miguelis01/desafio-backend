@@ -4,6 +4,7 @@ const getUserByToken = require("../helpers/get-user-by-token");
 const Appointment = require("../models/Appointment");
 const Token = require("../models/Token");
 const jwt = require("jsonwebtoken");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = class AppointmentController {
   static async create(req, res) {
@@ -73,6 +74,7 @@ module.exports = class AppointmentController {
     const token = await createAppointmentToken(appointmentId);
     const link = `http://localhost:5000/appointments/getappointment/${token}`;
     res.send({ link });
+    return;
   }
 
   static async getAppointment(req, res) {
@@ -95,12 +97,105 @@ module.exports = class AppointmentController {
 
       const consulta = await Appointment.findOne({ _id: appointmentId });
       if (consulta) {
-        res.send({ description: consulta.description });
+        res.send({ consulta });
+        return;
       } else {
         res.status(404).send({ mensagem: "Consulta não encontrada" });
+        return;
       }
     } catch (err) {
       res.status(400).send({ mensagem: "Token inválido ou expirado" });
+      return;
     }
+  }
+
+  static async delete(req, res) {
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) {
+      res.status(422).json({ message: "ID invalido" });
+      return;
+    }
+
+    const appointment = await Appointment.findOne({ _id: id });
+    if (!appointment) {
+      res.status(404).json({ message: "Consulta não encontrada" });
+      return;
+    }
+
+    const token = getToken(req);
+    const user = await getUserByToken(token);
+
+    if (appointment.user._id.toString() !== user.id.toString()) {
+      res
+        .status(422)
+        .json({ message: "Consulta não pertence a usuario cadastrado" });
+      return;
+    }
+
+    await Appointment.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Consulta deletada" });
+  }
+
+  static async update(req, res) {
+    const id = req.params.id;
+    const { date, time, description } = req.body;
+
+    const updatedData = {};
+
+    if (!ObjectId.isValid(id)) {
+      res.status(422).json({ message: "ID invalido" });
+      return;
+    }
+
+    const appointment = await Appointment.findOne({ _id: id });
+    if (!appointment) {
+      res.status(404).json({ message: "Consulta não encontrada" });
+      return;
+    }
+
+    const token = getToken(req);
+    const user = await getUserByToken(token);
+
+    if (appointment.user._id.toString() !== user.id.toString()) {
+      res
+        .status(422)
+        .json({ message: "Consulta não pertence a usuario cadastrado" });
+      return;
+    }
+
+    if (!date) {
+      res.status(422).json({ message: "A data é obrigatoria" });
+      return;
+    }
+
+    if (!time) {
+      res.status(422).json({ message: "O horário é obrigatorio" });
+      return;
+    }
+
+    if (!description) {
+      res.status(422).json({ message: "A descrição é obrigatoria" });
+      return;
+    }
+
+    updatedData.date = date;
+    updatedData.time = time;
+    updatedData.description = description;
+
+    const dateTimeExists = await Appointment.findOne({
+      date: date,
+      time: time,
+    });
+
+    if (dateTimeExists && dateTimeExists._id.toString() !== id) {
+      res.status(422).json({ message: "Já existe uma consulta nesse horário" });
+      return;
+    }
+
+    await Appointment.findByIdAndUpdate(id, updatedData);
+
+    res.status(200).json({ message: "Atualizado com sucesso" });
   }
 };

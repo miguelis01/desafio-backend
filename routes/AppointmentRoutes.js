@@ -21,5 +21,7 @@ router.get(
   verifyToken,
   AppointmentController.getAppointment
 );
+router.delete("/delete/:id", verifyToken, AppointmentController.delete);
+router.patch("/update/:id", verifyToken, AppointmentController.update);
 
 module.exports = router;
