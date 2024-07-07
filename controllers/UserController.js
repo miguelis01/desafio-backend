@@ -6,8 +6,6 @@ const jwt = require("jsonwebtoken");
 
 module.exports = class UserController {
   static async register(req, res) {
-    // res.json('Ola')
-
     const { name, password, email, confirmpassword } = req.body;
 
     //validations

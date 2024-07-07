@@ -1,52 +1,129 @@
-# Desafio de Backend - API de Marcação de Consultas
+# API de Marcação de Consultas - Documentação
 
-Bem-vindo ao desafio de backend da Blue Health Tech! Este desafio é uma oportunidade para demonstrar suas habilidades de desenvolvimento de API, compreensão de conceitos de backend, e capacidade de aplicar boas práticas de engenharia de software.
+## Tecnologias Utilizadas
 
-## Objetivo
+- **Linguagens:** Node.js + Express.
 
-Desenvolver uma API RESTful para a marcação de consultas médicas. A API permitirá que usuários façam login, agendem consultas, visualizem detalhes de suas consultas em PDF, e modifiquem ou cancelem essas consultas.
+- **Gerenciamento de banco:** MongoDb com Mongoose
 
-## Requisitos do Desafio
+- **JWT para Autenticação:** JSON Web Token.
 
-- **Autenticação:** Implemente o login de usuários utilizando JWT.
-- **Agendamento de Consultas:** Permita que os usuários agendem novas consultas.
-- **Geração de PDF:** Após agendar uma consulta, gere um PDF com os detalhes da consulta.
-- **Visualização de Consultas:** Permita que os usuários vejam informações detalhadas sobre suas consultas, a rota deve ser criptografada com um link de acesso único.
-- **Modificação e Cancelamento de Consultas:** Os usuários devem poder modificar detalhes de suas consultas ou cancelá-las.
+## Instalação e Execução
 
-## Critérios Técnicos
+⚠️ **Atenção: Antes de prosseguir, certifique-se de ter o Node, npm, MongoDb e Mongosh instalados em sua máquina.**
 
-- **Banco de Dados:** Use alguma ferramenta para gerenciamento do banco de dados.
-- **Arquitetura:** Siga o padrão MVC para estruturação do projeto.
-- **Linguagens permitidas:** PHP + Symphony | Node Js + Express.
-- **Tratamento de Erros:** Implemente um sistema de tratamento de erros eficaz.
+1. Clone o projeto na sua máquina.
 
-## Entregáveis
+2. Entre na pasta do projeto.
 
-- Código-fonte no GitHub com acesso ao repositório fornecido pela equipe da Blue.
-- Documentação no README, detalhando:
-  - Instruções de instalação e execução do projeto.
-  - Descrição das tecnologias utilizadas.
-  - Lista de rotas disponíveis e como utilizá-las.
+3. rode "npm install" para instalar as dependencias
 
-## Avaliação
+4. abra o terminal e rode 'mongosh' para interagir com o banco de dados e em seguida rode 'use desafio-backend' para criar o banco
 
-O desafio será avaliado com base em:
+5. rode 'npm start dev' para iniciar o projeto
 
-- **Qualidade do Código:** Clareza, uso de boas práticas, padrões de projeto e segurança.
-- **Funcionalidade:** Todos os requisitos devem ser atendidos.
-- **Design da API:** Clareza, consistência, e aderência aos princípios RESTful.
-- **Documentação:** Completa e clara, facilitando a compreensão e uso da API.
+## Rotas Disponíveis
 
-## Como Iniciar
+### Usuários
 
-1. Faça um fork deste repositório.
-2. Clone seu fork para sua máquina local.
-3. Siga as instruções de instalação específicas para configurar o ambiente de desenvolvimento.
-4. Comece a desenvolver, seguindo os requisitos e critérios técnicos descritos acima.
+- **POST /users/register**
 
-## Entrega
+  - Registra um novo usuário.
+  - **Exemplo de Entrada:**
+    {
+    "name": "Miguel Angelo",
+    "email": "miguel@gmail.com",
+    "password": "senha",
+    "confirmpassword": "senha"
+    }
+  - **Exemplo de Resposta:**
+    {
+    message: "Autenticado",
+    token,
+    userId,
+    }
 
-Quando estiver pronto para submeter seu desafio, crie um Pull Request do seu repositório forkado para o repositório principal da Blue Company. A equipe de desenvolvimento revisará sua entrega.
+- **POST /users/login**
 
-Boa sorte e estamos ansiosos para ver suas soluções inovadoras!
+  - Realiza o login de um usuário.
+  - **Exemplo de Entrada:**
+    {
+    "email": "miguel@gmail.com",
+    "password": "senha",
+    }
+  - **Exemplo de Resposta:**
+    {
+    message: "Autenticado",
+    token,
+    userId,
+    }
+
+    - **GET /users/user/:id**
+
+  - Recebe usuario pelo id.
+  - **Exemplo de Resposta:**
+    {
+    user
+    }
+
+    - **GET /users/checkuser**
+
+  - Recebe usuario autenticado.
+  - **Exemplo de Resposta:**
+    {
+    user
+    }
+
+    ### Consultas
+
+    - **POST /appointments/create**
+
+  - Cria uma novo consulta.
+  - **Exemplo de Entrada:**
+    {
+    "time": "13:00",
+    "date": "01/13",
+    "description": "consulta médica"
+    }
+
+    - **GET /appointments/myappointments**
+
+  - Retorna consultas do usuario registrado.
+
+    - **GET /appointments/createlink/:appointmentId**
+
+  - Cria link criptografado de acesso único para ver dados da consulta.
+  - **Exemplo de Saida:**
+    {
+    link
+    }
+
+    - **GET /appointments/getappointment/:token**
+
+  - Retorna dados da consulta atravez do token criptografado de acesso unico.
+  - **Exemplo de Saida:**
+    {
+    consulta
+    }
+
+    - **GET /appointments/getappointment/:token**
+
+  - Retorna dados da consulta atravez do token criptografado de acesso unico.
+  - **Exemplo de Saida:**
+    {
+    consulta
+    }
+
+  - **DELETE /appointments/delete/:id**
+
+  - Deleta consulta.
+
+  - **PATCH /appointments/update/:id**
+
+  - Edita consulta.
+  - **Exemplo de Entrada:**
+    {
+    "time": "13:00",
+    "date": "01/13",
+    "description": "consulta médica"
+    }
