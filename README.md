@@ -58,7 +58,7 @@
     userId,
     }
 
-    - **GET /users/user/:id**
+- **GET /users/user/:id**
 
   - Recebe usuario pelo id.
   - **Exemplo de Resposta:**
@@ -66,7 +66,7 @@
     user
     }
 
-    - **GET /users/checkuser**
+- **GET /users/checkuser**
 
   - Recebe usuario autenticado.
   - **Exemplo de Resposta:**
@@ -76,7 +76,7 @@
 
     ### Consultas
 
-    - **POST /appointments/create**
+- **POST /appointments/create**
 
   - Cria uma novo consulta.
   - **Exemplo de Entrada:**
@@ -86,11 +86,11 @@
     "description": "consulta médica"
     }
 
-    - **GET /appointments/myappointments**
+- **GET /appointments/myappointments**
 
   - Retorna consultas do usuario registrado.
 
-    - **GET /appointments/createlink/:appointmentId**
+- **GET /appointments/createlink/:appointmentId**
 
   - Cria link criptografado de acesso único para ver dados da consulta.
   - **Exemplo de Saida:**
@@ -98,7 +98,7 @@
     link
     }
 
-    - **GET /appointments/getappointment/:token**
+- **GET /appointments/getappointment/:token**
 
   - Retorna dados da consulta atravez do token criptografado de acesso unico.
   - **Exemplo de Saida:**
@@ -106,19 +106,19 @@
     consulta
     }
 
-    - **GET /appointments/getappointment/:token**
+- **GET /appointments/getappointment/:token**
 
   - Retorna dados da consulta atravez do token criptografado de acesso unico.
   - **Exemplo de Saida:**
     {
     consulta
     }
-
-  - **DELETE /appointments/delete/:id**
+    
+- **DELETE /appointments/delete/:id**
 
   - Deleta consulta.
 
-  - **PATCH /appointments/update/:id**
+- **PATCH /appointments/update/:id**
 
   - Edita consulta.
   - **Exemplo de Entrada:**
