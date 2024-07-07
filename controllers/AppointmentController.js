@@ -5,6 +5,7 @@ const Appointment = require("../models/Appointment");
 const Token = require("../models/Token");
 const jwt = require("jsonwebtoken");
 const ObjectId = require("mongoose").Types.ObjectId;
+const generatePdf = require("../helpers/generate-pdf");
 
 module.exports = class AppointmentController {
   static async create(req, res) {
@@ -50,6 +51,9 @@ module.exports = class AppointmentController {
 
     try {
       const newAppointment = await appointment.save();
+
+      generatePdf(newAppointment);
+
       res.status(201).json({ message: "cadastrado", newAppointment });
     } catch (error) {
       res.status(500).json({ message: error });
